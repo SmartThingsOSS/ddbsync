@@ -8,6 +8,7 @@
 package ddbsync
 
 import (
+	"fmt"
 	"log"
 	"sync"
 	"time"
@@ -62,7 +63,9 @@ func (m *Mutex) Unlock() {
 func (m *Mutex) PruneExpired() {
 	item, err := m.db.Get(m.Name)
 	if err != nil {
-		log.Printf("PruneExpired. error = %v", err)
+		if err.Error() != fmt.Sprintf("No item for Name, %s", m.Name) {
+			log.Printf("PruneExpired. error = %v", err)
+		}
 		return
 	}
 	if item != nil {
